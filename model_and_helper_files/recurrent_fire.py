@@ -98,14 +98,9 @@ def make_easy_to_use_stimulus(sample_rate, current_w_sample,w_stimulus):
 
 
 loop='0'
-ca1_inhib_connectivity='0.1'
-ca1_ex_connectivity='.05'
 ltp_val='2'
 excival='17'
 latinhibyval='0'
-ffinval='0'
-ca1_activ='30'
-ca1_inh='10'
 
 
 stim_dt=100
@@ -256,7 +251,7 @@ dinssyn/dt=-inssyn/taguisyn: 1
 Iinssyn=gbaryisyn*clip(inssyn,0,7000)*(v-VK):amp
 '''
     
-Pii=NeuronGroup(200,buzsaki_eqs,threshold='v>-20*mV',refractory='v>-60*mV',method='euler')
+Pii=NeuronGroup(100,buzsaki_eqs,threshold='v>-20*mV',refractory='v>-60*mV',method='euler')
 Pii.v='(randn()*60*.05-60)*mV'
 Pii.h=.999
 Pii.n=.0001
@@ -282,8 +277,7 @@ out_list=make_network(cores,number_of_neurons,netsize,connect_break)
 out_list=np.array(out_list)
 
 
-Pi = Pii[:100]
-Pli=Pii[100:200]
+Pi = Pii
 
 PI = PoissonInput(Pe,'ssyn',N=20,rate=10*Hz,weight='3')
 
@@ -305,10 +299,6 @@ Ci2 = Synapses(Pi, Pi, on_pre='inssyn +=35',delay=1*rand()*ms)
 Ci2.connect(p=0.3)
 Ci.delay=2*ms
 Cei=Synapses(Pe,Pi,on_pre='ssyn +=5')
-Clice=Synapses(Pli,Pe,on_pre='inssynslo+='+ffinval,delay=1*rand()*ms)
-Clice.connect(condition='abs(i*10-j)*(rand()+1)<=30')
-Celi=Synapses(Pe,Pli,on_pre='ssyn +=5')
-Celi.connect(condition='abs(i/10-j)*(rand()+1)<=3')
 Cei.connect(p=0.15)
 
 
